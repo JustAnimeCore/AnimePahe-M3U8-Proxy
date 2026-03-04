@@ -1,58 +1,31 @@
 # AnimePahe M3U8 Proxy
 
-A simple Express-based proxy server designed to handle M3U8 playlists and segment requests, managing necessary headers (Referer, Origin, User-Agent) to bypass restrictions.
+A lightweight M3U8 proxy for Express and Cloudflare Workers. Handles `Referer`, `Origin`, and `User-Agent` headers to bypass restrictions.
 
-## Features
+## 🚀 Cloudflare Worker (Recommended)
 
--   Proxies M3U8 playlists and rewrites internal segment/playlist URLs to route through the proxy.
--   Handles CORS and custom headers.
--   Includes a playground for testing URLs.
-
-## Installation
-
-1.  Clone the repository.
-2.  Install dependencies:
+1.  **Configure**: Edit `CONFIG` in `cf_worker.js`.
+2.  **Deploy**:
     ```bash
-    npm install
+    npx wrangler deploy
     ```
 
-## Usage
+## 💻 Express (Node.js)
 
-Start the server:
+1.  **Install**: `npm install`
+2.  **Run**: `npm start` (Default port: `3000`)
+3.  **Config**: Edit `.env` or `config.js`.
 
-```bash
-npm start
+## 🛠️ Usage
+
+**Endpoint**: `GET /m3u8-proxy?url=<TARGET_URL>&headers=<JSON_STRING>`
+
+**Example**:
+```
+https://your-proxy.com/m3u8-proxy?url=https://example.com/video.m3u8
 ```
 
-The server listens on port `3000` by default (configurable via `PORT` environment variable or `config.js`).
+-   `url`: The M3U8/segment URL to proxy.
+-   `headers` (optional): JSON-encoded headers (e.g., `{"Referer": "https://site.com"}`).
 
-## Environment Variables
-
-You can configure the server using a `.env` file. Copy `.env.example` to `.env` and adjust the values:
-
--   `PORT`: The port the server should listen on (default: `3000`).
--   `ALLOWED_ORIGINS`: Comma-separated list of allowed origins for CORS (e.g., `http://localhost:3000,https://your-domain.com`). If not set, it defaults to allowing all origins (depending on your specific implementation in `config.js`, currently defaults to empty array which usually implies specific handling or open access depending on middleware logic).
-
-## Endpoints
-
-### `GET /`
-Opens the testing playground.
-
-### `GET /m3u8-proxy`
-Proxies a specific URL.
-
-**Query Parameters:**
--   `url`: The absolute URL of the M3U8 file or segment to proxy.
--   `headers` (optional): JSON-encoded object of additional headers to send to the upstream server.
-
-**Example:**
-```
-http://localhost:3000/m3u8-proxy?url=https://example.com/video.m3u8
-```
-
-## Configuration
-
-Configuration is handled in `config.js`. You can modify:
--   `PORT`: Server port.
--   `DEFAULT_REFERER`: Default referer header sent upstream.
--   `FORWARD_HEADERS`: Headers to forward from the client request.
+**Playground (Express Only)**: Access `GET /` in your browser.
